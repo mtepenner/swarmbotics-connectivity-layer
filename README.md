@@ -1,75 +1,64 @@
-# The Connectivity Layer: Swarm Networking
+# Swarmbotics Connectivity Layer
 
-## Description
-`swarmbotics-connectivity-layer` provides the unbreakable, secure communication backbone required for massive-scale robotic swarm operations. By leveraging triple-redundant dynamic routing across MANET, 5G, and LEO SATCOM, this module ensures that critical Command and Control (C2) telemetry and low-latency video streams reach the operator interface, even in contested or degraded network environments. 
+`swarmbotics-connectivity-layer` is the networking control plane for contested swarm operations. It models failover across MANET, 5G, and LEO SATCOM, applies traffic-shaping rules for telemetry versus video, exposes a lightweight signaling service, and stages WireGuard and IDS assets for a zero-trust deployment baseline.
 
-## Table of Contents
-- [Features](#-features)
-- [Technologies Used](#%EF%B8%8F-technologies-used)
-- [Installation](#%EF%B8%8F-installation)
-- [Usage](#-usage)
-- [Contributing](#-contributing)
-- [License](#-license)
+## Components
 
-## 🚀 Features
+- `routing-manager/`: Link-quality monitoring, routing policy evaluation, and bandwidth-aware traffic shaping.
+- `radio-interfaces/`: Simulated control surfaces for tactical MANET radios, 5G modems, and LEO SATCOM terminals.
+- `streaming-pipeline/`: Signaling, media pipeline generation, telemetry multiplexing, and adaptive bitrate decisions.
+- `security-layer/`: WireGuard provisioning, key rotation, IDS rules, and NAT traversal planning.
 
-* **Triple-Redundant Failover**: Seamlessly transitions between Localized P2P MANET mesh networks (e.g., Silvus, TrellisWare), Cellular 5G, and LEO SATCOM (e.g., Starlink) based on real-time link quality.
-* **Intelligent Traffic Shaping**: Continuously monitors network latency and packet loss, dynamically prioritizing critical C2 telemetry over video streams during low-bandwidth scenarios.
-* **Ultra-Low Latency Streaming**: Features a robust WebRTC stack and hardware-accelerated GStreamer H.265 encoding, paired with an adaptive bitrate manager to prevent connection drops.
-* **Zero-Trust Security**: Employs ultra-fast WireGuard E2E encrypted tunnels with automated key rotation. Includes an Intrusion Detection System (IDS) to monitor for jamming or spoofing, and custom NAT hole punching to bypass complex firewalls.
+## Build
 
-## 🛠️ Technologies Used
-* **Languages**: C++, Python, JavaScript
-* **Networking**: WebRTC, UDP, WireGuard, AT Commands
-* **Hardware Interfacing**: GStreamer, Tactical Radio APIs, 5G Modems
-* **Security**: End-to-End Encryption, Dynamic Key Rotation
+Compile the C++ utilities with CMake:
 
-## ⚙️ Installation
+```bash
+cmake -S . -B build
+cmake --build build
+```
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/mtepenner/swarmbotics-connectivity-layer.git
-   cd swarmbotics-connectivity-layer
-   ```
-2. Install the necessary system dependencies (e.g., GStreamer, WireGuard):
-   ```bash
-   sudo apt-get install gstreamer1.0-tools wireguard
-   ```
-3. Compile the C++ network driver and routing components:
-   ```bash
-   mkdir build && cd build
-   cmake ..
-   make
-   ```
-4. Install Python dependencies for the failover daemon and radio interfaces:
-   ```bash
-   pip install -r requirements.txt
-   ```
+Python scripts use only the standard library, so `pip install -r requirements.txt` is a no-op placeholder for future dependencies.
 
-## 💻 Usage
+## Validation
 
-### Starting the Failover Daemon
-To initiate the dynamic routing manager that handles the MANET, 5G, and SATCOM failover logic:
+Run lightweight validation without external hardware:
+
+```bash
+make validate
+make smoke
+```
+
+`make validate` checks Python syntax, Node syntax, and shell syntax. `make smoke` exercises the routing policy evaluator, adaptive bitrate logic, and key rotation daemon once.
+
+## Usage
+
+Start the failover controller:
+
 ```bash
 python3 routing-manager/scripts/failover-daemon.py --config routing-manager/config/routing-policy.yaml
 ```
 
-### Initializing the Secure Tunnel
-To bring up the WireGuard VPN and establish the E2E encrypted connection:
-```bash
-sudo bash security-layer/vpn-tunnels/wireguard-setup.sh
-python3 security-layer/vpn-tunnels/key-rotation-daemon.py
-```
+Start the signaling service:
 
-### Launching the WebRTC Stream
-Start the signaling server and hardware-accelerated video pipeline for operator teleoperation:
 ```bash
 node streaming-pipeline/webrtc-stack/signaling-server.js
+```
+
+Preview the generated GStreamer pipeline:
+
+```bash
 bash streaming-pipeline/media-encoding/gstreamer-h265-hw.sh
 ```
 
-## 🤝 Contributing
-Contributions are highly appreciated, especially in the areas of improving NAT traversal algorithms, adding support for new tactical radio hardware, or optimizing the UDP telemetry multiplexer. Please ensure that all C++ code passes local memory leak checks and conforms to the project's formatting standards before opening a pull request.
+Render a WireGuard peer configuration and rotation snapshot:
 
-## 📄 License
-This project is licensed under the [MIT License](LICENSE) - see the LICENSE file for details. Copyright (c) 2026 Matthew Penner.
+```bash
+bash security-layer/vpn-tunnels/wireguard-setup.sh
+python3 security-layer/vpn-tunnels/key-rotation-daemon.py --once
+```
+
+## License
+
+This project is licensed under the MIT License. See `LICENSE` for details.
+

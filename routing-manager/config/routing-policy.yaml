@@ -1,0 +1,28 @@
+{
+  "links": {
+    "manet": {
+      "min_score": 75.0,
+      "priority": 1
+    },
+    "5g": {
+      "min_score": 68.0,
+      "priority": 2
+    },
+    "satcom": {
+      "min_score": 45.0,
+      "priority": 3
+    }
+  },
+  "traffic_classes": {
+    "telemetry": {
+      "priority": 100
+    },
+    "video": {
+      "priority": 60
+    }
+  },
+  "failover": {
+    "cooldown_seconds": 5,
+    "packet_loss_ceiling": 0.12
+  }
+}
