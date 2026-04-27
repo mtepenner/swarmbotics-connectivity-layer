@@ -1,0 +1,40 @@
+swarmbotics_connectivity_layer/
+├── routing_manager/                    # Triple-Redundant Comms: Dynamic Routing
+│   ├── src/
+│   │   ├── link_quality_monitor.cpp    # Continuously pings and measures latency/loss on all links
+│   │   └── traffic_shaper.cpp          # Prioritizes C2 telemetry over video during low bandwidth
+│   ├── scripts/
+│   │   └── failover_daemon.py          # Logic to seamlessly switch between MANET, 5G, and SATCOM
+│   └── config/
+│       └── routing_policy.yaml         # Defines triggers for switching networks
+│
+├── radio_interfaces/                   # Hardware-specific network drivers
+│   ├── manet_mesh/                     # Localized peer-to-peer networking
+│   │   ├── tactical_radio_driver.py    # Integrates with mesh radios (e.g., Silvus, TrellisWare)
+│   │   └── mesh_topology_tracker.cpp   # Maps the current local swarm mesh network
+│   ├── cellular_5g/
+│   │   └── modem_controller.py         # Handles AT commands, SIM states, and 5G connections
+│   └── leo_satcom/
+│       └── satcom_api_client.py        # Polls Starlink/LEO terminal for connection health
+│
+├── streaming_pipeline/                 # Video & Telemetry Streaming
+│   ├── webrtc_stack/
+│   │   ├── signaling_server.js         # Establishes WebRTC connections between robots and operators
+│   │   └── ice_config.json             # STUN/TURN server configurations
+│   ├── media_encoding/
+│   │   ├── gstreamer_h265_hw.sh        # Hardware-accelerated low-latency video encoding
+│   │   └── udp_telemetry_mux.cpp       # Packs ROS 2 JSON telemetry into raw UDP streams
+│   └── qos_manager/
+│       └── adaptive_bitrate.py         # Dynamically lowers video resolution if comms degrade
+│
+└── security_layer/                     # Network Security & Encrypted Tunnels
+    ├── vpn_tunnels/
+    │   ├── wireguard_setup.sh          # Configures ultra-fast, modern E2E encrypted tunnels
+    │   └── key_rotation_daemon.py      # Automatically rotates cryptographic keys in the field
+    ├── intrusion_detection/
+    │   └── ids_rules.conf              # Monitors for jamming, spoofing, or unauthorized access
+    └── nat_traversal/
+        └── custom_hole_punching.cpp    # Bypasses complex firewalls to maintain P2P swarm links
+
+
+
