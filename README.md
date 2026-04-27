@@ -1,7 +1,7 @@
 # The Connectivity Layer: Swarm Networking
 
 ## Description
-`swarmbotics_connectivity_layer` provides the unbreakable, secure communication backbone required for massive-scale robotic swarm operations. By leveraging triple-redundant dynamic routing across MANET, 5G, and LEO SATCOM, this module ensures that critical Command and Control (C2) telemetry and low-latency video streams reach the operator interface, even in contested or degraded network environments. 
+`swarmbotics-connectivity-layer` provides the unbreakable, secure communication backbone required for massive-scale robotic swarm operations. By leveraging triple-redundant dynamic routing across MANET, 5G, and LEO SATCOM, this module ensures that critical Command and Control (C2) telemetry and low-latency video streams reach the operator interface, even in contested or degraded network environments. 
 
 ## Table of Contents
 - [Features](#-features)
@@ -28,8 +28,8 @@
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/mtepenner/swarmbotics_connectivity_layer.git
-   cd swarmbotics_connectivity_layer
+   git clone https://github.com/mtepenner/swarmbotics-connectivity-layer.git
+   cd swarmbotics-connectivity-layer
    ```
 2. Install the necessary system dependencies (e.g., GStreamer, WireGuard):
    ```bash
@@ -51,21 +51,21 @@
 ### Starting the Failover Daemon
 To initiate the dynamic routing manager that handles the MANET, 5G, and SATCOM failover logic:
 ```bash
-python3 routing_manager/scripts/failover_daemon.py --config routing_manager/config/routing_policy.yaml
+python3 routing-manager/scripts/failover-daemon.py --config routing-manager/config/routing-policy.yaml
 ```
 
 ### Initializing the Secure Tunnel
 To bring up the WireGuard VPN and establish the E2E encrypted connection:
 ```bash
-sudo bash security_layer/vpn_tunnels/wireguard_setup.sh
-python3 security_layer/vpn_tunnels/key_rotation_daemon.py
+sudo bash security-layer/vpn-tunnels/wireguard-setup.sh
+python3 security-layer/vpn-tunnels/key-rotation-daemon.py
 ```
 
 ### Launching the WebRTC Stream
 Start the signaling server and hardware-accelerated video pipeline for operator teleoperation:
 ```bash
-node streaming_pipeline/webrtc_stack/signaling_server.js
-bash streaming_pipeline/media_encoding/gstreamer_h265_hw.sh
+node streaming-pipeline/webrtc-stack/signaling-server.js
+bash streaming-pipeline/media-encoding/gstreamer-h265-hw.sh
 ```
 
 ## 🤝 Contributing
